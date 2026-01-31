@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
   res.send("API running");
 });
 
-// Database connection + server start
+// Connect DB and start server
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
