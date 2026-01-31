@@ -20,8 +20,9 @@ const userRoutes = require("./routes/userRoutes");
 app.use("/api/users", userRoutes);
 
 // Ticket routes
-const ticketRoutes = require("./routes/tickets");
+const ticketRoutes = require("./routes/ticketRoutes");
 app.use("/api/tickets", ticketRoutes);
+
 // Test route
 app.get("/", (req, res) => {
   res.send("API running");
