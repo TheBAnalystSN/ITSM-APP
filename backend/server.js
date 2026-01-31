@@ -19,6 +19,9 @@ app.use("/api/auth", authRoutes);
 const userRoutes = require("./routes/userRoutes");
 app.use("/api/users", userRoutes);
 
+// Ticket routes
+const ticketRoutes = require("./routes/tickets");
+app.use("/api/tickets", ticketRoutes);
 // Test route
 app.get("/", (req, res) => {
   res.send("API running");
