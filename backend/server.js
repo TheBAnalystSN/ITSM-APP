@@ -15,6 +15,10 @@ app.use(express.json());
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
+// User-related routes
+const userRoutes = require("./routes/userRoutes");
+app.use("/api/users", userRoutes);
+
 // Test route
 app.get("/", (req, res) => {
   res.send("API running");
