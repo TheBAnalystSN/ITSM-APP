@@ -12,6 +12,7 @@ exports.createTicket = async (req, res) => {
 
     res.status(201).json(ticket);
   } catch (error) {
+    console.error("CREATE TICKET ERROR:", error)
     res.status(500).json({ message: error.message });
   }
 };
@@ -22,6 +23,7 @@ exports.getMyTickets = async (req, res) => {
     const tickets = await Ticket.find({ user: req.user._id });
     res.json(tickets);
   } catch (error) {
+    console.error("CREATE TICKET ERROR:", ERROR);
     res.status(500).json({ message: error.message });
   }
 };
@@ -41,6 +43,7 @@ exports.getTicketById = async (req, res) => {
 
     res.json(ticket);
   } catch (error) {
+    console.ERROR("CREATE TICKET ERROR:", error);
     res.status(500).json({ message: error.message });
   }
 };
