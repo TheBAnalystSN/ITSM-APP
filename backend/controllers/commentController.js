@@ -1,8 +1,8 @@
-const Comment = require("../models/Comment");
-const Ticket = require("../models/Ticket");
+import { create, find } from "../models/comment";
+import { findById } from "../models/Ticket";
 
 // POST /api/tickets/:ticketId/comments
-exports.addComment = async (req, res) => {
+export async function addComment(req, res) {
   try {
     const { text } = req.body;
 
@@ -10,7 +10,7 @@ exports.addComment = async (req, res) => {
       return res.status(400).json({ message: "Comment text is required" });
     }
 
-    const ticket = await Ticket.findById(req.params.ticketId);
+    const ticket = await findById(req.params.ticketId);
 
     if (!ticket) {
       return res.status(404).json({ message: "Ticket not found" });
@@ -21,7 +21,7 @@ exports.addComment = async (req, res) => {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    const comment = await Comment.create({
+    const comment = await create({
       ticket: ticket._id,
       author: req.user._id,
       text,
@@ -32,12 +32,12 @@ exports.addComment = async (req, res) => {
     console.error("ADD COMMENT ERROR:", error);
     return res.status(500).json({ message: error.message });
   }
-};
+}
 
 // GET /api/tickets/:ticketId/comments
-exports.getCommentsForTicket = async (req, res) => {
+export async function getCommentsForTicket(req, res) {
   try {
-    const ticket = await Ticket.findById(req.params.ticketId);
+    const ticket = await findById(req.params.ticketId);
 
     if (!ticket) {
       return res.status(404).json({ message: "Ticket not found" });
@@ -48,7 +48,7 @@ exports.getCommentsForTicket = async (req, res) => {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    const comments = await Comment.find({ ticket: ticket._id })
+    const comments = await find({ ticket: ticket._id })
       .populate("author", "name email role")
       .sort({ createdAt: 1 });
 
@@ -57,4 +57,4 @@ exports.getCommentsForTicket = async (req, res) => {
     console.error("GET COMMENTS ERROR:", error);
     return res.status(500).json({ message: error.message });
   }
-};
+}
