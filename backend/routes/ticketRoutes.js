@@ -6,5 +6,7 @@ const { createTicket, getMyTickets, getTicketById } = require("../controllers/ti
 router.post("/", protect, createTicket);
 router.get("/", protect, getMyTickets);
 router.get("/:id", protect, getTicketById);
+router.get("/test", (req, res) => {
+})
 
 module.exports = router;
