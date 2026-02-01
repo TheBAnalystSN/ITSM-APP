@@ -23,12 +23,13 @@ exports.registerUser = async (req, res) => {
       userId: user._id
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    console.error("AUTH ERROR:", error);
+    return res.status(500).json({ message: "error.message" });
   }
 };
 
 // Login user
-exports.loginUser = async (req, res) => {
+exports.loginUser = async (req, res) => { 
   try {
     const { email, password } = req.body;
 
@@ -57,6 +58,7 @@ exports.loginUser = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ message: "Server error" });
+    console.error("AUTH ERROR:", error);
+    return res.status(500).json({ message: "error.message" });
   }
 };

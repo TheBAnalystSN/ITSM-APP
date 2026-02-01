@@ -7,11 +7,10 @@ dotenv.config();
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Routes
+// Mount routes
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const ticketRoutes = require("./routes/ticketRoutes");
@@ -20,12 +19,12 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/tickets", ticketRoutes);
 
-// Test route
+// Root test
 app.get("/", (req, res) => {
   res.send("API running");
 });
 
-// Connect DB and start server
+// Connect DB then start server
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
@@ -37,3 +36,5 @@ mongoose
     console.error("MongoDB connection error:", err.message);
     process.exit(1);
   });
+
+  
