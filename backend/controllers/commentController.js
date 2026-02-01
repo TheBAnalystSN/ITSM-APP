@@ -1,8 +1,8 @@
-import { create, find } from "../models/comment";
-import { findById } from "../models/Ticket";
+const Comment = require("../models/Comment");
+const Ticket = require("../models/Ticket");
 
 // POST /api/tickets/:ticketId/comments
-export async function addComment(req, res) {
+exports.addComment = async (req, res) => {
   try {
     const { text } = req.body;
 
@@ -10,18 +10,17 @@ export async function addComment(req, res) {
       return res.status(400).json({ message: "Comment text is required" });
     }
 
-    const ticket = await findById(req.params.ticketId);
-
+    const ticket = await Ticket.findById(req.params.ticketId);
     if (!ticket) {
       return res.status(404).json({ message: "Ticket not found" });
     }
 
-    // Ownership check (user must own the ticket)
+    // Ownership check
     if (ticket.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    const comment = await create({
+    const comment = await Comment.create({
       ticket: ticket._id,
       author: req.user._id,
       text,
@@ -32,13 +31,12 @@ export async function addComment(req, res) {
     console.error("ADD COMMENT ERROR:", error);
     return res.status(500).json({ message: error.message });
   }
-}
+};
 
 // GET /api/tickets/:ticketId/comments
-export async function getCommentsForTicket(req, res) {
+exports.getCommentsForTicket = async (req, res) => {
   try {
-    const ticket = await findById(req.params.ticketId);
-
+    const ticket = await Ticket.findById(req.params.ticketId);
     if (!ticket) {
       return res.status(404).json({ message: "Ticket not found" });
     }
@@ -48,7 +46,7 @@ export async function getCommentsForTicket(req, res) {
       return res.status(403).json({ message: "Access denied" });
     }
 
-    const comments = await find({ ticket: ticket._id })
+    const comments = await Comment.find({ ticket: ticket._id })
       .populate("author", "name email role")
       .sort({ createdAt: 1 });
 
@@ -57,4 +55,4 @@ export async function getCommentsForTicket(req, res) {
     console.error("GET COMMENTS ERROR:", error);
     return res.status(500).json({ message: error.message });
   }
-}
+};
