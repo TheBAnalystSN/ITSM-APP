@@ -18,14 +18,14 @@ router.get("/ping", (req, res) => {
   res.json({ message: "tickets route mounted" });
 });
 
-// ADMIN ROUTES 
-router.get("/admin/all", protect, adminOnly, getAllTicketsAdmin);
-router.patch("/admin/:id/status", protect, adminOnly, updateTicketStatusAdmin);
-router.delete("/admin/:id", protect, adminOnly, deleteTicketAdmin);
-
 // user ticket routes
 router.post("/", protect, createTicket);
 router.get("/", protect, getMyTickets);
+
+// admin routes BEFORE :id
+router.get("/admin/all", protect, adminOnly, getAllTicketsAdmin);
+router.patch("/admin/:id/status", protect, adminOnly, updateTicketStatusAdmin);
+router.delete("/admin/:id", protect, adminOnly, deleteTicketAdmin);
 
 // nested comment routes
 router.use("/:ticketId/comments", commentRoutes);
