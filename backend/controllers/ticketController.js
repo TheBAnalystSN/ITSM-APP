@@ -1,5 +1,6 @@
 const Ticket = require("../models/Ticket");
 
+// USER: Create Ticet
 exports.createTicket = async (req, res) => {
   try {
     const { title, description, priority } = req.body;
@@ -22,6 +23,7 @@ exports.createTicket = async (req, res) => {
   }
 };
 
+// USER: Get My Tickets
 exports.getMyTickets = async (req, res) => {
   try {
     const tickets = await Ticket.find({ user: req.user._id }).sort({ createdAt: -1 });
@@ -32,6 +34,8 @@ exports.getMyTickets = async (req, res) => {
   }
 };
 
+
+// USER: Get Ticket by ID (ownership required)
 exports.getTicketById = async (req, res) => {
   try {
     const ticket = await Ticket.findById(req.params.id);
@@ -49,7 +53,26 @@ exports.getTicketById = async (req, res) => {
   }
 };
 
-// GET /api/tickets/admin/all  (admin only)
+// USER: Delete Own Ticket
+exports.deleteMyTicket = async (req, res) => {
+  try {
+    const ticket = await Ticket.findById(req.params.id);
+
+    if (!ticket) return res.status(404).json({ message: "Ticket not found" });
+
+    if (ticket.user.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ message: "Not allowed" });
+    }
+
+    await ticket.deleteOne();
+    return res.json({ message: "Ticket deleted" });
+  } catch (err) {
+    console.error("DELETE MY TICKET ERROR:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ADMIN: Get All Tickets
 exports.getAllTicketsAdmin = async (req, res) => {
   try {
     const tickets = await Ticket.find()
@@ -63,12 +86,12 @@ exports.getAllTicketsAdmin = async (req, res) => {
   }
 };
 
-// PATCH /api/tickets/admin/:id/status  (admin only)
+// ADMIN: Update Ticket Status
 exports.updateTicketStatusAdmin = async (req, res) => {
   try {
     const { status } = req.body;
-
     const allowed = ["Open", "In Progress", "Resolved"];
+
     if (!status || !allowed.includes(status)) {
       return res.status(400).json({
         message: "Status must be one of: Open, In Progress, Resolved",
@@ -76,9 +99,7 @@ exports.updateTicketStatusAdmin = async (req, res) => {
     }
 
     const ticket = await Ticket.findById(req.params.id);
-    if (!ticket) {
-      return res.status(404).json({ message: "Ticket not found" });
-    }
+    if (!ticket) return res.status(404).json({ message: "Ticket not found" });
 
     ticket.status = status;
     await ticket.save();
@@ -90,13 +111,11 @@ exports.updateTicketStatusAdmin = async (req, res) => {
   }
 };
 
-// DELETE /api/tickets/admin/:id  (admin only)
+// ADMIN: Delete Any Ticket
 exports.deleteTicketAdmin = async (req, res) => {
   try {
     const ticket = await Ticket.findById(req.params.id);
-    if (!ticket) {
-      return res.status(404).json({ message: "Ticket not found" });
-    }
+    if (!ticket) return res.status(404).json({ message: "Ticket not found" });
 
     await ticket.deleteOne();
     return res.json({ message: "Ticket deleted" });
