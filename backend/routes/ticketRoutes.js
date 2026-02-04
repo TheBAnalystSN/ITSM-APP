@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
+const { deleteTicket } = require("../controllers/ticketController");
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 
 const {
@@ -13,7 +14,8 @@ const {
   deleteTicketAdmin,
 } = require("../controllers/ticketController");
 
-// admin routes first
+
+// admin routes first (avoid conflict with :id)
 router.get("/admin/all", protect, adminOnly, getAllTicketsAdmin);
 router.patch("/admin/:id/status", protect, adminOnly, updateTicketStatusAdmin);
 router.delete("/admin/:id", protect, adminOnly, deleteTicketAdmin);
