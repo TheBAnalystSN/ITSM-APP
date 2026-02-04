@@ -29,6 +29,10 @@ exports.registerUser = async (req, res) => {
 };
 
 // Login user
+const generateToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+};
+
 exports.loginUser = async (req, res) => {
   try {
     const { email, password } = req.body || {};
@@ -37,27 +41,30 @@ exports.loginUser = async (req, res) => {
       return res.status(400).json({ message: "Email and password are required" });
     }
 
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
+
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-
-    res.json({
-      token,
+    return res.json({
+      token: generateToken(user._id),
       user: {
         id: user._id,
         name: user.name,
-        email: user.email
-      }
+        email: user.email,
+        role: user.role,
+      },
     });
   } catch (error) {
     console.error("AUTH ERROR:", error);
-    return res.status(500).json({ message: "error.message" });
+    return res.status(500).json({ message: "Server error" });
   }
 };
+
