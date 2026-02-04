@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+
 const { protect, adminOnly } = require("../middleware/authMiddleware");
 
 const {
@@ -12,13 +13,17 @@ const {
   deleteTicketAdmin,
 } = require("../controllers/ticketController");
 
-// user
-router.post("/", protect, createTicket);
+// ping routes
+router.get("/ping", (req, res) => res.json({ message: "ticket routes are working" }));
+router.post("/ping", (req, res) => res.json({ message: "POST ticket routes are working", body: req.body }));
+
+// USER ticket routes
+router.post("/", protect, createTicket);    
 router.get("/", protect, getMyTickets);
 router.get("/:id", protect, getTicketById);
 router.delete("/:id", protect, deleteMyTicket);
 
-// admin
+// ADMIN ticket routes
 router.get("/admin/all", protect, adminOnly, getAllTicketsAdmin);
 router.patch("/admin/:id/status", protect, adminOnly, updateTicketStatusAdmin);
 router.delete("/admin/:id", protect, adminOnly, deleteTicketAdmin);
