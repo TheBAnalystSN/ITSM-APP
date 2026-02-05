@@ -1,16 +1,13 @@
 const Comment = require("../models/Comment");
 const Ticket = require("../models/Ticket");
 
-// POST /api/tickets/:ticketId/comments
 exports.addComment = async (req, res) => {
   try {
-    // Defensive auth check
     if (!req.user) {
       return res.status(401).json({ message: "Unauthorized" });
     }
 
     const { text } = req.body;
-
     if (!text || !text.trim()) {
       return res.status(400).json({ message: "Comment text is required" });
     }
@@ -20,7 +17,6 @@ exports.addComment = async (req, res) => {
       return res.status(404).json({ message: "Ticket not found" });
     }
 
-    // Ownership check
     if (ticket.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Access denied" });
     }
@@ -31,17 +27,15 @@ exports.addComment = async (req, res) => {
       text,
     });
 
-    return res.status(201).json(comment);
+    res.status(201).json(comment);
   } catch (error) {
     console.error("ADD COMMENT ERROR:", error);
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
-// GET /api/tickets/:ticketId/comments
 exports.getCommentsForTicket = async (req, res) => {
   try {
-    // Defensive auth check
     if (!req.user) {
       return res.status(401).json({ message: "Unauthorized" });
     }
@@ -51,7 +45,6 @@ exports.getCommentsForTicket = async (req, res) => {
       return res.status(404).json({ message: "Ticket not found" });
     }
 
-    // Ownership check
     if (ticket.user.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: "Access denied" });
     }
@@ -60,9 +53,9 @@ exports.getCommentsForTicket = async (req, res) => {
       .populate("author", "name email role")
       .sort({ createdAt: 1 });
 
-    return res.json(comments);
+    res.json(comments);
   } catch (error) {
     console.error("GET COMMENTS ERROR:", error);
-    return res.status(500).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
