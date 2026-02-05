@@ -10,8 +10,6 @@ const { protect, admin } = require("../middleware/authMiddleware");
 
 // ADMIN ROUTES
 router.get("/admin/all", protect, admin, getAllTicketsAdmin);
-
-// ADMIN DELETE
 router.delete("/:id", protect, admin, deleteTicket);
 
 module.exports = router;
