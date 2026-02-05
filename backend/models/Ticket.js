@@ -2,11 +2,13 @@ const mongoose = require("mongoose");
 
 const ticketSchema = new mongoose.Schema(
   {
-    title: { type: String, required: true, trim: true },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+    },
+    title: { type: String, required: true },
     description: { type: String, required: true },
-    priority: { type: String, enum: ["Low", "Medium", "High"], default: "Low" },
-    status: { type: String, enum: ["Open", "In Progress", "Resolved"], default: "Open" },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
 );

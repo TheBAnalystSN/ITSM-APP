@@ -1,15 +1,12 @@
 const express = require("express");
 const router = express.Router();
-
-const { protect, admin } = require("../middleware/authMiddleware");
+const { protect } = require("../middleware/authMiddleware");
 const {
   createTicket,
-  getAllTicketsAdmin,
-  deleteTicket,
+  getMyTickets,
 } = require("../controllers/ticketController");
 
 router.post("/", protect, createTicket);
-router.get("/admin/all", protect, admin, getAllTicketsAdmin);
-router.delete("/:id", protect, admin, deleteTicket);
+router.get("/", protect, getMyTickets);
 
 module.exports = router;

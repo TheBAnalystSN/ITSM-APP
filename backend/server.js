@@ -13,14 +13,8 @@ app.use(express.json());
 
 // ROUTES
 app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/users", require("./routes/userRoutes"));
 app.use("/api/tickets", require("./routes/ticketRoutes"));
-app.use(
-  "/api/tickets/:ticketId/comments",
-  require("./routes/commentRoutes")
-);
 
-// ROOT
 app.get("/", (req, res) => {
   res.send("API running");
 });
