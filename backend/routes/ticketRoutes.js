@@ -8,7 +8,6 @@ const {
 
 const { protect, admin } = require("../middleware/authMiddleware");
 
-// ADMIN ROUTES
 router.get("/admin/all", protect, admin, getAllTicketsAdmin);
 router.delete("/:id", protect, admin, deleteTicket);
 
