@@ -1,13 +1,14 @@
-const Comment = require("../models/comment");
+const Comment = require("../models/Comment");
 const Ticket = require("../models/Ticket");
 
 // POST /api/tickets/:ticketId/comments
 exports.addComment = async (req, res) => {
-    console.log("COMMENT req.params:", req.params);
-console.log("COMMENT req.user:", req.user && req.user._id);
-
   try {
-    console.log("Current user:", req.user);
+    // Defensive auth check
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     const { text } = req.body;
 
     if (!text || !text.trim()) {
@@ -40,6 +41,11 @@ console.log("COMMENT req.user:", req.user && req.user._id);
 // GET /api/tickets/:ticketId/comments
 exports.getCommentsForTicket = async (req, res) => {
   try {
+    // Defensive auth check
+    if (!req.user) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     const ticket = await Ticket.findById(req.params.ticketId);
     if (!ticket) {
       return res.status(404).json({ message: "Ticket not found" });
